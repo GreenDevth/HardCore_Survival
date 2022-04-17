@@ -142,3 +142,5 @@ cython_debug/
 config.json
 .idea
 /.idea
+/scum_db.db
+scum_db.db
