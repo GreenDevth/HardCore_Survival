@@ -210,38 +210,42 @@ class RegistrationEvent(commands.Cog):
 
                             def check(m):
                                 return m.author == interaction.author and m.channel.id == interaction.channel.id
-                        while True:
-                            try:
-                                msg = await self.bot.wait_for('message', check=check, timeout=30)
-                                check = activate_code_check(member.id)
-                                if msg.content == check:
-                                    exclusive_channel = self.bot.get_channel(exclusive)
-                                    result = activate_code(check)
-                                    steam = steam_check(member.id)
-                                    await exclusive_channel.send(
-                                        f"📃 **Exclusive Member {member.mention}**\n"
-                                        "```=====================================\n"
-                                        f"ผู้ลงทะเบียน : {member.display_name}\n"
-                                        f"ดิสคอร์ดไอดี : {member.id}\n"
-                                        f"สตรีมไอดี : {steam}\n"
-                                        "สถานะ : ลงทะเบียนเรียบร้อย ✅\n"
-                                        "=====================================\n```"
-                                    )
-                                    await interaction.channel.send(f"{member.mention}\n{result}", delete_after=5)
-                                    await discord.DMChannel.send(member, result)
-                                    await msg.delete()
-                                else:
-                                    await interaction.channel.send(
-                                        f'⚠ Error : {member.mention} รหัสปลดล๊อคไม่ถูกต้อง\nกรุณากดที่ปุ่ม ACTIVATE '
-                                        f'MEMBERS '
-                                        'เพื่อทำรายการใหม่อีกครั้ง',
-                                        delete_after=5)
-                                    await msg.delete()
-                            except asyncio.TimeoutError:
-                                msg = f'⚠ Error : {member.mention} คุณใช้เวลาในการกรอกรหัสปลดล็อคนานเกินไป\n' \
-                                      ' กรุณากดที่ปุ่ม ACTIVATE MEMBERS เพื่อทำรายการใหม่อีกครั้ง'
-                                await interaction.channel.send(msg.strip(), delete_after=5)
-                                return
+                            while True:
+                                try:
+                                    msg = await self.bot.wait_for('message', check=check, timeout=30)
+                                    check = activate_code_check(member.id)
+                                    if msg.content == check:
+                                        exclusive_channel = self.bot.get_channel(exclusive)
+                                        result = activate_code(check)
+                                        steam = steam_check(member.id)
+                                        await exclusive_channel.send(
+                                            f"📃 **Exclusive Member {member.mention}**\n"
+                                            "```=====================================\n"
+                                            f"ผู้ลงทะเบียน : {member.display_name}\n"
+                                            f"ดิสคอร์ดไอดี : {member.id}\n"
+                                            f"สตรีมไอดี : {steam}\n"
+                                            "สถานะ : ลงทะเบียนเรียบร้อย ✅\n"
+                                            "=====================================\n```"
+                                        )
+                                        await interaction.channel.send(f"{member.mention}\n{result}", delete_after=5)
+                                        await discord.DMChannel.send(member, result)
+                                        await msg.delete()
+                                    else:
+                                        warning = f'⚠ Error : {member.mention} รหัสปลดล๊อคไม่ถูกต้อง\n' \
+                                                  f'กรุณากดที่ปุ่ม ACTIVATE MEMBERS เพื่อทำรายการใหม่อีกครั้ง'
+                                        await interaction.channel.send(
+                                            warning.strip(),
+                                            delete_after=5)
+                                        await msg.delete()
+                                except asyncio.TimeoutError:
+                                    msg = f'⚠ Error : {member.mention} คุณใช้เวลาในการกรอกรหัสปลดล็อคนานเกินไป\n' \
+                                          ' กรุณากดที่ปุ่ม ACTIVATE MEMBERS เพื่อทำรายการใหม่อีกครั้ง'
+                                    await interaction.channel.send(msg.strip(), delete_after=5)
+                                    return
+                        elif check == 2:
+                            await interaction.respond(
+                                content='เราได้รับรหัสปลดล็อคเรียบร้อยแล้ว กรุณารอข้อความยืนยันสิทธิ์จากระบบอีกครั้ง'
+                            )
 
                     else:
                         await interaction.respond(

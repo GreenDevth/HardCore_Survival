@@ -144,3 +144,5 @@ config.json
 /.idea
 /scum_db.db
 scum_db.db
+*.db
+!/scum_db.db
