@@ -13,7 +13,7 @@ with open('./config/config.json') as config:
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix='.', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents)
 bot.remove_command('help')
 DiscordComponents(bot)
 
