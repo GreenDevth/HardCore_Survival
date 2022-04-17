@@ -86,14 +86,14 @@ class RegistrationEvent(commands.Cog):
                                     activatecode = generate_code(6)
                                     update_steam_id(member.id, msg.content, activatecode)
                                     await interaction.channel.send(
-                                        "🎉 ยินดีต้อนรับอย่างเป็นทางการสู่สังคม ChangThai℠ Really survival ",
+                                        "🎉 ยินดีต้อนรับอย่างเป็นทางการสู่สังคม Really survival - Hardcore version ",
                                         delete_after=5)
                                     embed = discord.Embed(
                                         title="รหัสปลดล๊อคสำหรับสมัครใช้งาน Exclusive Membes",
                                         description="กรุณากดที่ปุ่ม ACTIVATE MEMBER และกรอกรหัสปลดล็อค 6 หลัก",
                                     )
                                     embed.add_field(name='รหัสปลดล็อค', value=f"```cs\n{activatecode}\n```")
-                                    embed.add_field(name='ห้องลงทะเบียน', value='<#918381749833171005>')
+                                    embed.add_field(name='ห้องลงทะเบียน', value=f'<#{register}>')
                                     embed.set_image(
                                         url="https://cdn.discordapp.com/attachments/894251225237848134"
                                             "/961097333876097034/unknown.png")
@@ -157,7 +157,7 @@ class RegistrationEvent(commands.Cog):
                                             description="กรุณากดที่ปุ่ม ACTIVATE MEMBER และกรอกรหัสปลดล็อค 6 หลัก",
                                         )
                                         embed.add_field(name='รหัสปลดล็อค', value=f"```cs\n{activatecode}\n```")
-                                        embed.add_field(name='ห้องลงทะเบียน', value='<#918381749833171005>')
+                                        embed.add_field(name='ห้องลงทะเบียน', value=f'<#{register}>')
                                         embed.set_image(
                                             url="https://cdn.discordapp.com/attachments/894251225237848134"
                                                 "/961097333876097034/unknown.png")
@@ -195,7 +195,7 @@ class RegistrationEvent(commands.Cog):
                             img = "https://cdn.discordapp.com/attachments/941531376363126814/964896802274967622" \
                                   "/unknown.png "
                             embed = discord.Embed(
-                                title='คุณเป็นสมาชิค Exclusive Members แล้ว',
+                                title='คุณเป็นสมาชิก Exclusive Members แล้ว',
                                 colour=discord.Colour.green()
                             )
                             embed.set_thumbnail(url=member.avatar_url)
@@ -228,11 +228,6 @@ class RegistrationEvent(commands.Cog):
                                         "=====================================\n```"
                                     )
                                     await interaction.channel.send(f"{member.mention}\n{result}", delete_after=5)
-                                    # verify = discord.utils.get(interaction.guild.roles, name='Verify Members')
-                                    # role = discord.utils.get(interaction.guild.roles, name='Joiner')
-                                    # await member.add_roles(verify)
-                                    # if role in member.roles:
-                                    #     await member.remove_roles(role)
                                     await discord.DMChannel.send(member, result)
                                     await msg.delete()
                                 else:
@@ -262,7 +257,7 @@ class RegistrationEvent(commands.Cog):
                     embed.set_thumbnail(url=member.avatar_url)
                     embed.set_image(url=img)
                     embed.add_field(name='สถานะการลงทะเบียน', value="ยังไม่ได้ลงทะเบียน 🔴")
-                    embed.add_field(name='ห้องลงทะเบียน', value=f'{exclusive}')
+                    embed.add_field(name='ห้องลงทะเบียน', value=f'{register}')
                     await interaction.respond(embed=embed)
 
             if btn == btn_list[2]:
