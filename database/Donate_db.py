@@ -3,7 +3,7 @@ from sqlite3 import Error
 from database.db_config import create_connection
 import datetime
 
-db = str(os.path.abspath('./scum_db.db'))
+db = str(os.path.abspath('./SQLite/scum_db.db'))
 
 x = datetime.datetime.now()
 create_date = x.strftime("%d/%m/%Y %H:%M:%S")

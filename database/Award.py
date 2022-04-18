@@ -1,6 +1,6 @@
 from database.Member_db import *
 
-db = os.path.abspath('./scum_db.db')
+db = os.path.abspath('./SQLite/scum_db.db')
 
 
 def exp_update(discord_id, exp):

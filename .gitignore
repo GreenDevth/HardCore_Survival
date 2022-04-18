@@ -144,3 +144,4 @@ config.json
 /.idea
 .db
 scum_db.db
+SQLite/

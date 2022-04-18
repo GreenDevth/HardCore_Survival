@@ -4,7 +4,7 @@ import datetime
 from sqlite3 import Error
 from database.db_config import create_connection
 
-database = os.path.abspath('./scum_db.db')
+database = os.path.abspath('./SQLite/scum_db.db')
 
 
 def member_check(discord):
