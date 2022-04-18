@@ -20,7 +20,8 @@ class MemberJoin(commands.Cog):
         welcome_channel = self.bot.get_channel(int(join))
         guild = self.bot.get_guild(int(guild_id))
         joiner = discord.utils.get(guild.roles, name='Joiner')
-        await member.add_roles(joiner)
+        if joiner not in member.roles:
+            await member.add_roles(joiner)
         x = datetime.datetime.now()
         join_date = x.strftime("%d/%m/%Y %H:%M:%S")
         bank_id = str(member.id)[:5]
