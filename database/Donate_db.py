@@ -8,9 +8,9 @@ create_date = x.strftime("%d/%m/%Y %H:%M:%S")
 
 def get_id(discord):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        row = cur.execute('select donate_id from donation where discord_id=%s', (discord,)).fetchone()
+        row = cur.execute('select donate_id from donation where discord_id=?', (discord,)).fetchone()
         while row is not None:
             res = list(row)
             return res[0]
@@ -21,9 +21,9 @@ def get_id(discord):
 def new_donate_player(discord_name, discord_id):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        sql = """INSERT INTO donation(discord_name, discord_id, create_date) VALUES (%s,%s,%s)"""
+        sql = """INSERT INTO donation(discord_name, discord_id, create_date) VALUES (?,?,?)"""
         variable = (discord_name, discord_id, create_date,)
         cur.execute(sql, variable)
         conn.commit()
@@ -38,9 +38,9 @@ def new_donate_player(discord_name, discord_id):
 def update_room_id(discord, room_id):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('update donation set channel_id=%s where discord_id=%s', (room_id, discord,))
+        cur.execute('update donation set channel_id=? where discord_id=?', (room_id, discord,))
         conn.commit()
         cur.close()
         print('update donate room sucessfull!')
@@ -51,9 +51,9 @@ def update_room_id(discord, room_id):
 def update_donate_date(discord):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('update donation set create_date=%s where discord_id=%s', (create_date, discord,))
+        cur.execute('update donation set create_date=? where discord_id=?', (create_date, discord,))
         conn.commit()
         cur.close()
     except Error as e:
@@ -62,9 +62,9 @@ def update_donate_date(discord):
 
 def get_channel_id(discord):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        row = cur.execute('select channel_id from donation where discord_id=%s', (discord,)).fetchone()
+        row = cur.execute('select channel_id from donation where discord_id=?', (discord,)).fetchone()
         while row is not None:
             res = list(row)
             return res[0]

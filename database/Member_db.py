@@ -1,17 +1,17 @@
 import datetime
+import os.path
 
-from mysql.connector import MySQLConnection, Error
+from sqlite3 import Error
+from database.db_config_SQLite import create_connection
 
-from database.db_config import read_db_config
-
-db = read_db_config()
+db = str(os.path.abspath('./SQLite/scum_db.db'))
 
 
 def member_check(discord):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute("select count(*) from players where discord_id=%s", (discord,))
+        cur.execute("select count(*) from players where discord_id=?", (discord,))
         row = cur.fetchone()
         res = list(row)
         return res[0]
@@ -21,9 +21,9 @@ def member_check(discord):
 
 def players(discord):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('select * from players where discord_id=%s', (discord,))
+        cur.execute('select * from players where discord_id=?', (discord,))
         rows = cur.fetchall()
         for row in rows:
             return row
@@ -33,10 +33,10 @@ def players(discord):
 
 def join_server(discord_name, discord_id, bank_id, join_date):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
         cur.execute("INSERT INTO players(discord_name, discord_id, bank_id, member_type, join_date, player_status) "
-                    "VALUES (%s,%s,%s,%s,%s,%s)",
+                    "VALUES (?,?,?,?,?,?)",
                     (discord_id, discord_name, bank_id, "Player", join_date, "Joined",))
         conn.commit()
         cur.close()
@@ -51,10 +51,10 @@ def leave_server(discord_id):
     x = datetime.datetime.now()
     leave_date = x.strftime("%d/%m/%Y %H:%M:%S")
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
         cur.execute(
-            "UPDATE players SET member_type='Unregister', player_status='Leave', leave_date=%s WHERE discord_id=%s",
+            "UPDATE players SET member_type='Unregister', player_status='Leave', leave_date=? WHERE discord_id=?",
             (leave_date, discord_id,))
         conn.commit()
         cur.close()
@@ -70,10 +70,10 @@ def welcome_back(discord_id):
     comeback_date = x.strftime("%d/%m/%Y %H:%M:%S")
 
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute("UPDATE players SET member_type='Player', player_status='Joined', join_date=%s, verify_status=0 "
-                    "WHERE discord_id=%s",
+        cur.execute("UPDATE players SET member_type='Player', player_status='Joined', join_date=?, verify_status=0 "
+                    "WHERE discord_id=?",
                     (comeback_date, discord_id,))
         conn.commit()
         cur.close()
@@ -86,9 +86,9 @@ def welcome_back(discord_id):
 
 def steam_check(discord):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('select steam_id from players where discord_id=%s', (discord,))
+        cur.execute('select steam_id from players where discord_id=?', (discord,))
         row = cur.fetchone()
         res = list(row)
         return res[0]
@@ -99,9 +99,9 @@ def steam_check(discord):
 def update_steam_id(discord, steam, code):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('update players set steam_id=%s, activate_code=%s where discord_id=%s', (steam, code, discord,))
+        cur.execute('update players set steam_id=?, activate_code=? where discord_id=?', (steam, code, discord,))
         conn.commit()
         cur.close()
         msg = "โปรดนำรหัสปลดล็อคนี้ `` {} `` ใช้สำหรับการปลดล็อคการเข้าใช้งานเซิร์ฟของคุณ".format(code)
@@ -112,9 +112,9 @@ def update_steam_id(discord, steam, code):
 
 def verify_check(discord_id):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('select verify_status from players where discord_id=%s', (discord_id,))
+        cur.execute('select verify_status from players where discord_id=?', (discord_id,))
         row = cur.fetchone()
         while row is not None:
             res = list(row)
@@ -126,9 +126,9 @@ def verify_check(discord_id):
 
 def activate_code_check(discord_id):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('select activate_code from players WHERE discord_id = %s', (discord_id,))
+        cur.execute('select activate_code from players WHERE discord_id = ?', (discord_id,))
         row = cur.fetchone()
         while row is not None:
             res = list(row)
@@ -141,9 +141,9 @@ def activate_code_check(discord_id):
 def update_activate_code(discord, code):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('update players set activate_code=%s where discord_id=%s', (code, discord,))
+        cur.execute('update players set activate_code=? where discord_id=?', (code, discord,))
         conn.commit()
         cur.close()
         msg = f"รหัสปลดล๊อคใหม่ของคุณคือ {code}"
@@ -155,9 +155,9 @@ def update_activate_code(discord, code):
 def activate_code(activatecode):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('UPDATE players SET verify_status = 2 WHERE activate_code = %s', (activatecode,))
+        cur.execute('UPDATE players SET verify_status = 2 WHERE activate_code = ?', (activatecode,))
         conn.commit()
         cur.close()
         msg = "🎉 Activate your player successfull " \
@@ -170,10 +170,10 @@ def activate_code(activatecode):
 def verify_member(discord):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
         cur.execute("""
-            UPDATE players SET verify_status = 1, member_type='Exclusive' WHERE discord_id = %s;
+            UPDATE players SET verify_status = 1, member_type='Exclusive' WHERE discord_id = ?;
             """, (discord,))
         conn.commit()
         cur.close()
@@ -185,9 +185,9 @@ def verify_member(discord):
 
 def player_award(discord):
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('select discord_name, player_exp, player_level from players where discord_id=%s', (discord,))
+        cur.execute('select discord_name, player_exp, player_level from players where discord_id=?', (discord,))
         rows = cur.fetchone()
         res = list(rows)
         return res

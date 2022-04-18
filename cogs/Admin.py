@@ -1,16 +1,15 @@
 import json
-
+import os
 import discord
 import requests
-from discord.ext import commands, tasks
-
+from discord.ext import commands
+from dotenv import load_dotenv
 from database.Award import exp_process
 from database.Bank_db import add_coins, remove_coins
-from database.Member_db import verify_member, players, player_award
+from database.Member_db import verify_member, players
 
-with open('./config/guild.json') as config:
-    data = json.load(config)
-    admin = data['roles']['admin']
+load_dotenv()
+admin = os.getenv('ADMIN')
 
 
 class DiscordAdminCommand(commands.Cog):
@@ -68,57 +67,23 @@ class DiscordAdminCommand(commands.Cog):
     @commands.command(name='addexp')
     @commands.has_role(admin)
     async def add_exp(self, ctx, exp: int, member: discord.Member):
-        player = player_award(member.id)
         await ctx.reply(f"ทำการเพิ่มค่าประสบการณ์จำนวน **{exp}** ให้กับ {member.display_name} สำเร็จ",
                         mention_author=False)
         result = exp_process(member.id, exp)
         await discord.DMChannel.send(member, result)
 
     @commands.command(name='id')
-    async def id(self, ctx, *, user_id: int, steam, bank, coins, ):
+    async def id(self, ctx, *, user_id: int):
         user = discord.utils.get(self.bot.get_all_members(), id=user_id)
         if user is not None:
-            # Found the user
             await ctx.send(user)
         else:
-            # Can't find the user
             await ctx.send("**Try that again**, this time add a user's id(**of this server**)")
 
 
 class ScumServerStatus(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        self.change_presence.start()
-
-    @tasks.loop(seconds=15)
-    async def change_presence(self):
-        def get_players():
-            try:
-                response = requests.get('https://api.battlemetrics.com/servers/13458708')
-                status = response.status_code
-                if status == 200:
-                    print(response.json()['data']['attributes']['players'])
-                    player = response.json()['data']['attributes']['players']
-                    msg = f"{player}/20 Prisoner"
-                    return msg.strip()
-                elif status != 200:
-                    msg = "stay offline"
-                    return msg.strip()
-                else:
-                    msg = "wait for online"
-                    return msg.strip()
-            except Exception as e:
-                print(e)
-                return 0
-
-        result = get_players()
-        await self.bot.change_presence(
-            status=discord.Status.online,
-            activity=discord.Activity(type=discord.ActivityType.watching, name=result)
-        )
 
     @commands.command(name='server')
     @commands.has_role("Verify Members")

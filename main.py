@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-token = os.getenv('TOKEN')
+token = os.getenv('HARDCORE')
 
 intents = discord.Intents.default()
 intents.members = True
@@ -16,6 +16,11 @@ intents.members = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 bot.remove_command('help')
 DiscordComponents(bot)
+
+
+@bot.event
+async def on_ready():
+    print(bot.user.name + " has been connected to Discord server!")
 
 
 @bot.command()

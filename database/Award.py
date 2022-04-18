@@ -39,9 +39,9 @@ def exp_process(discord, exp):
 def level_update(discord_id, level):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('update players set player_level = %s where discord_id = %s', (level, discord_id,))
+        cur.execute('update players set player_level = ? where discord_id = ?', (level, discord_id,))
         conn.commit()
         print('Level update successfull.')
         cur.close()
@@ -53,9 +53,9 @@ def level_update(discord_id, level):
 def update_exp(discord_id, exp):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute('update players set player_exp = %s where discord_id = %s', (exp, discord_id,))
+        cur.execute('update players set player_exp = ? where discord_id = ?', (exp, discord_id,))
         conn.commit()
         print('Exp update successfull.')
         cur.close()
@@ -67,9 +67,9 @@ def update_exp(discord_id, exp):
 def reset_exp(discord):
     conn = None
     try:
-        conn = MySQLConnection(**db)
+        conn = create_connection(db)
         cur = conn.cursor()
-        cur.execute("UPDATE players SET player_exp = 0 WHERE discord_id=%s", (discord,))
+        cur.execute("UPDATE players SET player_exp = 0 WHERE discord_id=?", (discord,))
         conn.commit()
         cur.close()
     except Error as e:
