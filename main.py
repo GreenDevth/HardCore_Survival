@@ -1,14 +1,14 @@
 import asyncio
-import json
 import os
 
 import discord
 from discord.ext import commands
 from discord_components import DiscordComponents
+from dotenv import load_dotenv
 
-with open('./config/config.json') as config:
-    data = json.load(config)
-    token = data["token"]
+load_dotenv()
+
+token = os.getenv('TOKEN')
 
 intents = discord.Intents.default()
 intents.members = True
