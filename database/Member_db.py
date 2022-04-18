@@ -166,14 +166,15 @@ def activate_code(activatecode):
 
 def verify_member(discord):
     conn = None
-
     try:
         conn = create_connection(str(database))
         cur = conn.cursor()
-        cur.execute('UPDATE players SET verify_status = 1, member_type=? WHERE discord_id = ?', ("Exclusive", discord,))
+        cur.execute("""
+            UPDATE players SET verify_status = 1, member_type='Exclusive' WHERE discord_id = ?;
+            """, (discord,))
         conn.commit()
         cur.close()
-        msg = "🎉 Verify your player successfull! : Server IP [143.244.33.48:7102] "
+        msg = "🎉 Verify successfully! : Server IP [143.244.33.48:7102]"
         return msg.strip()
     except Error as e:
         print(e)
@@ -188,20 +189,5 @@ def player_award(discord):
         res = list(rows)
         return res
 
-    except Error as e:
-        print(e)
-
-
-def insert_player(discord, name, steam, bank, coin, plevel, pexp, mtype, jdate, code, vstatus):
-    conn = None
-    try:
-        conn = create_connection(str(database))
-        cur = conn.cursor()
-        query = "insert into players(discord_name, discord_id, steam_id, bank_id, coins, player_level, player_exp, " \
-                "member_type, join_date, activate_code, player_status, verify_status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) "
-        values = (discord, name, steam, bank, coin, plevel, pexp, mtype, jdate, code, vstatus)
-        cur.execute(query, values)
-        conn.commit()
-        cur.close()
     except Error as e:
         print(e)

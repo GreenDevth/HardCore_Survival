@@ -8,7 +8,7 @@ from discord.ext import commands
 from discord_components import Button, ButtonStyle
 
 from database.Member_db import steam_check, update_steam_id, member_check, \
-    join_server, verify_check, activate_code_check, activate_code, players
+    join_server, verify_check, activate_code_check, activate_code, players, update_activate_code
 
 with open('./config/config.json') as config:
     data = json.load(config)
@@ -289,9 +289,15 @@ class RegistrationEvent(commands.Cog):
                         await interaction.respond(embed=embed)
                     else:
                         new = activate_code_check(member.id)
-                        await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
-                        await discord.DMChannel.send(member, f" รหัสปลดล็อคของคุณ คือ {new}")
-                        return
+                        if new is not None:
+                            await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
+                            await discord.DMChannel.send(member, f" รหัสปลดล็อคของคุณ คือ {new}")
+                            return
+                        else:
+                            activatecode = generate_code(6)
+                            update_activate_code(member.id, activatecode)
+                            await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
+                            await discord.DMChannel.send(member, f" รหัสปลดล็อคของคุณ คือ {activatecode}")
 
 
 def setup(bot):

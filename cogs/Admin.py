@@ -8,33 +8,41 @@ from database.Award import exp_process
 from database.Bank_db import add_coins, remove_coins
 from database.Member_db import verify_member, players, player_award
 
+with open('./config/guild.json') as config:
+    data = json.load(config)
+    admin = data['roles']['admin']
+
 
 class DiscordAdminCommand(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command(name='verify')
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_role(admin)
     async def verify_command(self, ctx, member: discord.Member):
-        """ Verify ผู้เล่นที่ลงทะเบียนสำเร็จ Admin only"""
+
+        verify = discord.utils.get(ctx.guild.roles, name='Verify Members')
+        role = discord.utils.get(ctx.guild.roles, name='Joiner')
         member_name = players(member.id)[1]
         if member_name == member.name:
             await ctx.reply(f'✅ {member.display_name} is verified', mention_author=False)
-            verify = discord.utils.get(ctx.guild.roles, name='Verify Members')
-            role = discord.utils.get(ctx.guild.roles, name='Joiner')
-            await member.add_roles(verify)
             if role in member.roles:
                 await member.remove_roles(role)
                 await member.add_roles(verify)
             elif role not in member.roles:
                 await member.add_roles(verify)
-            elif verify in member.roles:
+            else:
                 pass
             verified = verify_member(member.id)
             await discord.DMChannel.send(member, verified)
 
+    @verify_command.error
+    async def verify_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingRole):
+            await ctx.reply(error.args[0], mention_author=False)
+
     @commands.command(name='addcoins')
-    @commands.has_role("Admin")
+    @commands.has_role(admin)
     async def add_coins(self, ctx, coins, member: discord.Member):
         await ctx.reply(f"ทำการโอนเงินจำวน **{coins}** ให้กับ {member.display_name} สำเร็จ", mention_author=False)
         result = add_coins(member.id, coins)
@@ -46,7 +54,7 @@ class DiscordAdminCommand(commands.Cog):
             await ctx.reply(error.args[0], mention_author=False)
 
     @commands.command(name='removecoins')
-    @commands.has_role("Admin")
+    @commands.has_role(admin)
     async def remove_coins(self, ctx, coins, member: discord.Member):
         await ctx.reply(f"ทำการหักเงินจำวน **{coins}** จาก {member.display_name} สำเร็จ", mention_author=False)
         result = remove_coins(member.id, coins)
@@ -58,6 +66,7 @@ class DiscordAdminCommand(commands.Cog):
             await ctx.reply(error.args[0], mention_author=False)
 
     @commands.command(name='addexp')
+    @commands.has_role(admin)
     async def add_exp(self, ctx, exp: int, member: discord.Member):
         player = player_award(member.id)
         await ctx.reply(f"ทำการเพิ่มค่าประสบการณ์จำนวน **{exp}** ให้กับ {member.display_name} สำเร็จ",

@@ -6,5 +6,10 @@
     "commands_channel": 925559937323659274,
     "register_channel": 878878305296728095,
     "exclusive_channel": 953622566105387048
+  },
+  "roles": {
+    "admin": "Admin",
+    "verify": "Verify Members",
+    "donate_id": 965444942187102218
   }
 }
