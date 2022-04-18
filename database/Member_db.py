@@ -52,7 +52,7 @@ def leave_server(discord_id):
     try:
         conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute("UPDATE players SET player_status='Leave', leave_date=%s WHERE discord_id=%s",
+        cur.execute("UPDATE players SET discord_id=NULL, player_status='Leave', leave_date=%s WHERE discord_id=%s",
                     (leave_date, discord_id,))
         conn.commit()
         cur.close()
