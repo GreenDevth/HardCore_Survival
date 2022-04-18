@@ -128,7 +128,9 @@ class RegistrationEvent(commands.Cog):
                         embed.add_field(name='status', value='```cs\n🟢\n```')
                         await interaction.respond(embed=embed)
                         if verify not in member.roles:
-                            await member.add_roles(verify)
+                            code = activate_code_check(member.id)
+                            await discord.DMChannel.send(member, f"โปรดใช้รหัสนี้ **{code}** ปลดล็อคการใช้งานของคุณ")
+                            # await member.add_roles(verify)
                         else:
                             pass
                     else:
