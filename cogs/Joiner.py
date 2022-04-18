@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 from database.Member_db import *
 
-with open('./config/config.json') as config:
+with open('./config/survial.json') as config:
     data = json.load(config)
     guild_id = data["guild_id"]
     join = data["join_channel"]
