@@ -35,8 +35,9 @@ def join_server(discord_name, discord_id, bank_id, join_date):
     try:
         conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute("INSERT INTO players(discord_name, discord_id, bank_id, join_date) VALUES (%s,%s,%s,%s)",
-                    (discord_id, discord_name, bank_id, join_date,))
+        cur.execute("INSERT INTO players(discord_name, discord_id, bank_id, member_type, join_date, player_status) "
+                    "VALUES (%s,%s,%s,%s,%s,%s)",
+                    (discord_id, discord_name, bank_id, "Player", join_date, "Joined",))
         conn.commit()
         cur.close()
         print('New player recode to database successfull!')
@@ -52,8 +53,9 @@ def leave_server(discord_id):
     try:
         conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute("UPDATE players SET discord_id=NULL, player_status='Leave', leave_date=%s WHERE discord_id=%s",
-                    (leave_date, discord_id,))
+        cur.execute(
+            "UPDATE players SET member_type='Unregister', player_status='Leave', leave_date=%s WHERE discord_id=%s",
+            (leave_date, discord_id,))
         conn.commit()
         cur.close()
         print('Update Player status and leave date successfully!')
@@ -70,7 +72,8 @@ def welcome_back(discord_id):
     try:
         conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute("UPDATE players SET player_status='Joined', join_date=%s WHERE discord_id=%s",
+        cur.execute("UPDATE players SET member_type='Player', player_status='Joined', join_date=%s, verify_status=0 "
+                    "WHERE discord_id=%s",
                     (comeback_date, discord_id,))
         conn.commit()
         cur.close()
