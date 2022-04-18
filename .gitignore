@@ -145,3 +145,4 @@ config.json
 .db
 scum_db.db
 SQLite/
+config.ini

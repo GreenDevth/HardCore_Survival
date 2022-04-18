@@ -113,7 +113,7 @@ class ScumServerStatus(commands.Cog):
     #         except Exception as e:
     #             print(e)
     #             return 0
-    # 
+    #
     #     result = get_players()
     #     await self.bot.change_presence(
     #         status=discord.Status.online,

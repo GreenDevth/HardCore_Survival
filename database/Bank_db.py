@@ -1,14 +1,12 @@
 from database.Member_db import *
 
-db = os.path.abspath('./SQLite/scum_db.db')
-
 
 def coins_update(discord, coin):
     conn = None
     try:
-        conn = create_connection(str(db))
+        conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute('update players set coins=? where discord_id=?', (coin, discord,))
+        cur.execute('update players set coins=%s where discord_id=%s', (coin, discord,))
         conn.commit()
         cur.close()
     except Error as e:
@@ -17,9 +15,9 @@ def coins_update(discord, coin):
 
 def player_bank(discord):
     try:
-        conn = create_connection(str(db))
+        conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute('select discord_name, bank_id, coins from players where discord_id=?', (discord,))
+        cur.execute('select discord_name, bank_id, coins from players where discord_id=%s', (discord,))
         rows = cur.fetchone()
         res = list(rows)
         return res
@@ -29,9 +27,9 @@ def player_bank(discord):
 
 def discord_id(bank_id):
     try:
-        conn = create_connection(str(db))
+        conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute('select discord_id from players where bank_id=?', (bank_id,))
+        cur.execute('select discord_id from players where bank_id=%s', (bank_id,))
         row = cur.fetchone()
         res = list(row)
         return res[0]
@@ -46,9 +44,9 @@ def plus_coin(receiver, coin, senders):
     transfer = "${:,d}".format(coin)
     conn = None
     try:
-        conn = create_connection(str(db))
+        conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute('update players set coins=? where discord_id=?', (coins, receiver,))
+        cur.execute('update players set coins=%s where discord_id=%s', (coins, receiver,))
         conn.commit()
         print("update coins successfull!")
         cur.close()
@@ -63,9 +61,9 @@ def minus_coin(discord, coin):
     coins = int(player_coin) - int(coin)
     conn = None
     try:
-        conn = create_connection(str(db))
+        conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute('update players set coins=? where discord_id=?', (coins, discord,))
+        cur.execute('update players set coins=%s where discord_id=%s', (coins, discord,))
         conn.commit()
         cur.close()
         msg = "ระบบได้หักเงินจำนวน **${:,d}** จากบัญชีของคุณ ยอดเงินปัจจุบันคือ **${:,d}**".format(coin, coins)
@@ -79,9 +77,9 @@ def add_coins(discord, coin):
     coins = int(player_coin) + int(coin)
     conn = None
     try:
-        conn = create_connection(str(database))
+        conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute('update players set coins=? where discord_id=?', (coins, discord,))
+        cur.execute('update players set coins=%s where discord_id=%s', (coins, discord,))
         conn.commit()
         cur.close()
         print('add coin successfull!')
@@ -108,9 +106,9 @@ def remove_coins(discord, coin):
     coins = check()
     conn = None
     try:
-        conn = create_connection(str(database))
+        conn = MySQLConnection(**db)
         cur = conn.cursor()
-        cur.execute('update players set coins=? where discord_id=?', (coins, discord,))
+        cur.execute('update players set coins=%s where discord_id=%s', (coins, discord,))
         conn.commit()
         cur.close()
         msg = "ระบบทำการหักเงินของคุณจำนวน **${:,d}** ยอดเงินปัจจุบันคือ **${:,d}**".format(int(coin), coins)

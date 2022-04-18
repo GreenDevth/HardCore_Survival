@@ -15,32 +15,6 @@ with open('./config/guild.json') as config:
     donate_room = data['roles']['donate_id']
 
 
-def create_table(tbname):
-    try:
-        cxn = create_connection(db)
-        cur = cxn.cursor()
-        list_of_tabales = cur.execute("""
-            SELECT tbl_name FROM sqlite_master WHERE type='table' AND tbl_name=?;
-        """, (tbname,)).fetchall()
-
-        if not list_of_tabales:
-            cur.execute("""
-                CREATE TABLE IF NOT EXISTS donation(
-                    donate_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    discord_name TEXT NULL,
-                    discord_id TEXT NULL UNIQUE,
-                    channel_id TEXT NULL,
-                    create_date TEXT NULL
-                );
-            """)
-            print('Create New Donation table successfully!')
-        else:
-            print(f'{tbname} already exists!')
-
-    except Error as e:
-        print(e)
-
-
 class ServerDonation(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -83,7 +57,6 @@ class DonateEvent(commands.Cog):
         btn = interaction.component.custom_id
 
         if btn == 'donate':
-            create_table("donation")
             check = get_id(member.id)
             if check is None:
                 room_create = new_donate_player(member.name, member.id)

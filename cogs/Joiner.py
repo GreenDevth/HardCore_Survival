@@ -16,10 +16,6 @@ class MemberJoin(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_ready(self):
-        print(f"{self.bot.user.name} has connected to Discord server!")
-
-    @commands.Cog.listener()
     async def on_member_join(self, member):
         welcome_channel = self.bot.get_channel(int(join))
         guild = self.bot.get_guild(int(guild_id))
