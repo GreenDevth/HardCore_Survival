@@ -242,6 +242,7 @@ class RegistrationEvent(commands.Cog):
                                         )
                                         await interaction.channel.send(f"{member.mention}\n{result}", delete_after=5)
                                         await discord.DMChannel.send(member, result)
+                                        return
                                     else:
                                         warning = f'⚠ Error : {member.mention} รหัสปลดล๊อคไม่ถูกต้อง\n' \
                                                   f'กรุณากดที่ปุ่ม ACTIVATE MEMBERS เพื่อทำรายการใหม่อีกครั้ง'
