@@ -110,7 +110,8 @@ class RegistrationEvent(commands.Cog):
                                     await msg.delete()
                                     return
                             else:
-                                await interaction.channel.send('ข้อมูลของคุณไม่ถูกต้องกรุณาทำรายการใหม่อีกครั้ง', delete_after=3)
+                                await interaction.channel.send('ข้อมูลของคุณไม่ถูกต้องกรุณาทำรายการใหม่อีกครั้ง',
+                                                               delete_after=3)
                                 await msg.delete()
                         except asyncio.TimeoutError:
                             await interaction.send(f'{member.mention} : 📢 คุณใช้เวลาในการลงทะเบียนนานเกินไป '
@@ -216,12 +217,14 @@ class RegistrationEvent(commands.Cog):
                                 content='กรุณากรอก **รหัสปลดล็อค** ที่ได้จากเซิร์ฟเวอร์'
                             )
 
-                            def check(m):
-                                return m.author == interaction.author and m.channel.id == interaction.channel.id
-
                             while True:
+                                i_author = interaction.author.id
+                                i_channel = interaction.channel.id
                                 try:
-                                    msg = await self.bot.wait_for('message', check=check, timeout=30)
+                                    msg = await self.bot.wait_for(
+                                        'message',
+                                        check=lambda r: r.author == i_author and r.channel == i_channel,
+                                        timeout=30)
                                     check = activate_code_check(member.id)
                                     if msg.content == check:
                                         await msg.delete()
@@ -274,7 +277,7 @@ class RegistrationEvent(commands.Cog):
                     await interaction.respond(embed=embed)
 
             if btn == btn_list[2]:
-                if member_check(member.id) != 0:
+                if member_check(member.id) == 1:
                     verify = verify_check(member.id)
 
                     def player_ign():
@@ -307,9 +310,18 @@ class RegistrationEvent(commands.Cog):
                             update_activate_code(member.id, activatecode)
                             await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
                             await discord.DMChannel.send(member, f" รหัสปลดล็อคของคุณ คือ {activatecode}")
-            elif member_check(member.id) == 0:
-                await interaction.respond(
-                    content=f'{member.mention} ไม่พบข้อมูลผู้ใช้งานของคุณในระบบ กรุณาลงทะเบียนใหม่อีกครั้ง')
+                elif member_check(member.id) == 0:
+                    img = "https://cdn.discordapp.com/attachments/941531376363126814/964892521283072050" \
+                          "/register_guide.png "
+                    embed = discord.Embed(
+                        title="โปรดลงทะเบียนเพื่อเปิดการใช้งานคำสั่ง",
+                        colour=discord.Colour.red()
+                    )
+                    embed.set_thumbnail(url=member.avatar_url)
+                    embed.set_image(url=img)
+                    embed.add_field(name='สถานะการลงทะเบียน', value="ยังไม่ได้ลงทะเบียน 🔴")
+                    embed.add_field(name='ห้องลงทะเบียน', value=f'<#{register}>')
+                    await interaction.respond(embed=embed)
 
 
 def setup(bot):
