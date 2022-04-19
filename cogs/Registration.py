@@ -307,7 +307,7 @@ class RegistrationEvent(commands.Cog):
                             update_activate_code(member.id, activatecode)
                             await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
                             await discord.DMChannel.send(member, f" รหัสปลดล็อคของคุณ คือ {activatecode}")
-            elif member_check(member) == 0:
+            elif member_check(member.id) == 0:
                 await interaction.respond(
                     content=f'{member.mention} ไม่พบข้อมูลผู้ใช้งานของคุณในระบบ กรุณาลงทะเบียนใหม่อีกครั้ง')
 
