@@ -101,8 +101,8 @@ class RegistrationEvent(commands.Cog):
                                     embed.add_field(name='รหัสปลดล็อค', value=f"```cs\n{activatecode}\n```")
                                     embed.add_field(name='ห้องลงทะเบียน', value=f'<#{register}>')
                                     embed.set_image(
-                                        url="https://cdn.discordapp.com/attachments/894251225237848134"
-                                            "/961097333876097034/unknown.png")
+                                        url="https://cdn.discordapp.com/attachments/941531376363126814"
+                                            "/965805933550796812/unknown.png")
                                     await discord.DMChannel.send(
                                         member,
                                         embed=embed
@@ -218,12 +218,12 @@ class RegistrationEvent(commands.Cog):
                             )
 
                             while True:
-                                i_author = interaction.author.id
-                                i_channel = interaction.channel.id
+                                def check(res):
+                                    return res.author == interaction.author and res.channel == interaction.channel
                                 try:
                                     msg = await self.bot.wait_for(
                                         'message',
-                                        check=lambda r: r.author == i_author and r.channel == i_channel,
+                                        check=check,
                                         timeout=30)
                                     check = activate_code_check(member.id)
                                     if msg.content == check:
