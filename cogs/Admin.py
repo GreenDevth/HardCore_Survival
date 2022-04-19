@@ -6,10 +6,14 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from database.Award import exp_process
 from database.Bank_db import add_coins, remove_coins
-from database.Member_db import verify_member, players
+from database.Member_db import verify_member, players, steam_to_info
 
 load_dotenv()
 admin = os.getenv('ADMIN')
+
+with open('./config/Server.json') as Roles:
+    data = json.load(Roles)
+    admin_role = data['roles']['admin']
 
 
 class DiscordAdminCommand(commands.Cog):
@@ -129,6 +133,18 @@ class ScumServerStatus(commands.Cog):
             await ctx.reply('You have not verified your membership. Please visit <#878878305296728095>',
                             mention_author=False)
             await ctx.message.delete()
+
+    @commands.command(name='steam')
+    @commands.has_role(admin_role)
+    async def check_steam_command(self, ctx, steam):
+        """ Check Player by steam id"""
+        info = steam_to_info(steam)
+        name = info[0]
+        discord_id = info[1]
+        steam_id = info[2]
+        user = discord.utils.get(self.bot.get_all_members(), id=discord_id)
+        message = f"```cs\nAccount : <@{user}>, Name : '{name}', Steam ID : {steam_id}\n```"
+        await ctx.send(message)
 
 
 def setup(bot):

@@ -194,3 +194,16 @@ def player_award(discord):
 
     except Error as e:
         print(e)
+
+
+def steam_to_info(steam):
+    try:
+        conn = create_connection(db)
+        cur = conn.cursor()
+        row = cur.execute('select discord_name, discord_id, steam_id from main.players where steam_id=?',
+                          (steam,)).fetchone()
+        while row is not None:
+            res = list(row)
+            return res
+    except Error as e:
+        print(e)

@@ -1,0 +1,7 @@
+{
+  "roles": {
+    "admin": "Admin",
+    "verify": "Verify Members",
+    "joiner": "Joiner"
+  }
+}

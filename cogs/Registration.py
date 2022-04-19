@@ -223,6 +223,7 @@ class RegistrationEvent(commands.Cog):
                                     msg = await self.bot.wait_for('message', check=check, timeout=30)
                                     check = activate_code_check(member.id)
                                     if msg.content == check:
+                                        await msg.delete()
                                         exclusive_channel = self.bot.get_channel(exclusive)
                                         result = activate_code(check)
                                         steam = steam_check(member.id)
@@ -237,7 +238,6 @@ class RegistrationEvent(commands.Cog):
                                         )
                                         await interaction.channel.send(f"{member.mention}\n{result}", delete_after=5)
                                         await discord.DMChannel.send(member, result)
-                                        await msg.delete()
                                     else:
                                         warning = f'⚠ Error : {member.mention} รหัสปลดล๊อคไม่ถูกต้อง\n' \
                                                   f'กรุณากดที่ปุ่ม ACTIVATE MEMBERS เพื่อทำรายการใหม่อีกครั้ง'
