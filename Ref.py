@@ -3,7 +3,7 @@ from database.Member_db import *
 
 def player_bank(discord):
     try:
-        conn = create_connection(str(database))
+        conn = create_connection(str(db))
         cur = conn.cursor()
         cur.execute('select discord_name, bank_id, coins from players where discord_id=?', (discord,))
         rows = cur.fetchone()
@@ -18,7 +18,7 @@ def player_bank(discord):
 
 def discord_id(bank_id):
     try:
-        conn = create_connection(str(database))
+        conn = create_connection(str(db))
         cur = conn.cursor()
         cur.execute('select discord_id from players where bank_id=?', (bank_id,))
         row = cur.fetchone()
@@ -31,7 +31,7 @@ def discord_id(bank_id):
 
 def players(discord):
     try:
-        conn = create_connection(str(database))
+        conn = create_connection(str(db))
         cur = conn.cursor()
         cur.execute('select * from players where discord_id=?', (discord,))
         rows = cur.fetchall()

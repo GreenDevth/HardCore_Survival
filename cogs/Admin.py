@@ -1,9 +1,12 @@
+import asyncio
 import json
 import os
 import discord
 import requests
 from discord.ext import commands
 from dotenv import load_dotenv
+
+from database.Admin_db import exclusive_lists
 from database.Award import exp_process
 from database.Bank_db import add_coins, remove_coins
 from database.Member_db import verify_member, players, steam_to_info
@@ -142,9 +145,22 @@ class ScumServerStatus(commands.Cog):
         name = info[0]
         discord_id = info[1]
         steam_id = info[2]
-        user = discord.utils.get(self.bot.get_all_members(), id=discord_id)
-        message = f"```cs\nAccount : <@{user}>, Name : '{name}', Steam ID : {steam_id}\n```"
+        message = f"```cs\nAccount : {discord_id}, Name : '{name}', Steam ID : {steam_id}\n```"
         await ctx.send(message)
+
+    @check_steam_command.error
+    async def check_steam_error(self, ctx, error):
+        if isinstance(error, commands.MissingRole):
+            await ctx.reply(error.args[0], mention_author=False)
+
+    @commands.command(name='exclusive_list')
+    @commands.has_role(admin_role)
+    async def exclusive_list_command(self, ctx):
+        exclusive_lists()
+        await asyncio.sleep(1.5)
+        await ctx.send(
+            file=discord.File('./Exclusive/exclusive_data.csv')
+        )
 
 
 def setup(bot):

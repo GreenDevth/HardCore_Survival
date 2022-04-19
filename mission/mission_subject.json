@@ -1,0 +1,20 @@
+{
+  "farmer": {
+    "Title": "THE FARMER : ",
+    "Name": "ภารกิจจัดหาผักผลไม้",
+    "Description": "ผู้เล่นต้องจัดส่งสินค้าตามเควสที่ได้รับมอบหมายให้เสร็จสิ้นเสียก่อน ถึงจะสามารถรับภารกิจใหม่ได้",
+    "ImageURL": "https://cdn.discordapp.com/attachments/941531376363126814/962319168416415804/vegetable.png"
+  },
+  "hunter": {
+    "Title": "THE FISHING : ",
+    "Name": "ภารกิจล่าเนื้อ",
+    "Description": "ผู้เล่นต้องจัดส่งสินค้าตามเควสที่ได้รับมอบหมายให้เสร็จสิ้นเสียก่อน ถึงจะสามารถรับภารกิจใหม่ได้",
+    "ImageURL": "https://cdn.discordapp.com/attachments/941531376363126814/962319168210870352/hunter.png"
+  },
+  "fishing": {
+    "Title": "THE FISHING : ",
+    "Name": "ภารกิจล่าสัตว์น้ำ",
+    "Description": "ผู้เล่นต้องจัดส่งสินค้าตามเควสที่ได้รับมอบหมายให้เสร็จสิ้นเสียก่อน ถึงจะสามารถรับภารกิจใหม่ได้",
+    "ImageURL": "https://cdn.discordapp.com/attachments/941531376363126814/962319168017952798/fishing.png"
+  }
+}

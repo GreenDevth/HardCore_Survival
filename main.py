@@ -21,6 +21,13 @@ DiscordComponents(bot)
 @bot.event
 async def on_ready():
     print(bot.user.name + " has been connected to Discord server!")
+    members = 0
+    for guild in bot.guilds:
+        members += guild.member_count - 1
+    await bot.change_presence(
+        status=discord.Status.online,
+        activity=discord.Activity(type=discord.ActivityType.watching, name=f'{members} Discord members')
+    )
 
 
 @bot.command()

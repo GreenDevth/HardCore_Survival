@@ -115,3 +115,49 @@ def remove_coins(discord, coin):
         return msg.strip()
     except Error as e:
         print(e)
+
+
+def try_reset(discord):
+    conn = None
+    try:
+        conn = create_connection(db)
+        cur = conn.cursor()
+        cur.execute('UPDATE player_mission set upload_status=0, report_status=0, mission_status=0 where player_id=?',
+                    (discord,))
+        conn.commit()
+        cur.close()
+        print('reset player mission success!')
+        msg = "ระบบทำการรีเซ็ตภารกิจของคุณให้เรียบร้อยแล้ว"
+        return msg.strip()
+    except Error as e:
+        print(e)
+
+
+def mission_fine(discord, amount):
+    amount = int(amount)
+    player_coin = int(player_bank(discord)[2])
+
+    def check():
+        if player_coin < int(amount):
+            c = 0
+            return c
+        elif int(amount) <= player_coin:
+            c = int(player_coin) - int(amount)
+            return c
+
+    coins = check()
+
+    if int(coins) == 0:
+        msg = "ยอดเงินของคุณไม่เพียงพอสำหรับจ่ายค่ารีเซ็ตภารกิจ"
+        return msg.strip()
+    else:
+        coins_update(discord, int(coins))
+        tozero = try_reset(discord)
+        player_coin = player_bank(discord)[2]
+        msg = "ระบบทำการหักเงินของคุณจำนวน" \
+              " **${:,d}** ยอดเงินปัจจุบันคือ **${:,d}**".format(int(amount), int(player_coin))
+        data = {
+            "reset": tozero,
+            "fine": msg
+        }
+        return data
