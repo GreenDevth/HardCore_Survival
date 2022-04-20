@@ -11,5 +11,12 @@
     "admin": "Admin",
     "verify": "Verify Members",
     "donate_id": 965444942187102218
+  },
+  "quest": {
+    "report": 949609279277633536,
+    "hunter_channel": 962340544477016085,
+    "farmer_channel": 962340751814049802,
+    "fishing_channel": 962340649498210365
   }
 }
+

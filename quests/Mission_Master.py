@@ -1,7 +1,6 @@
 import asyncio
 import datetime
 import json
-import os.path
 import random
 import discord
 from discord.ext import commands
@@ -13,12 +12,39 @@ from database.Mission_db import new_mission, mission_status, get_mission_id, mis
     update_mission_img, mission_reset
 
 fishing_id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+farmer_id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+hunter_id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-img_dir = os.path.abspath('./mission/img/')
+
+def select(missionlist):
+    quest = None
+    if missionlist == "fishing":
+        quest = fishing_id_list
+        return quest
+    if missionlist == "hunter":
+        quest = hunter_id_list
+        return quest
+    if missionlist == "farmer":
+        quest = farmer_id_list
+        return quest
+
+
+with open('./config/guild.json') as config_channel:
+    channel_list = json.load(config_channel)
+    farm = channel_list['quest']['farmer_channel']
+    hunt = channel_list['quest']['hunter_channel']
+    fish = channel_list['quest']['fishing_channel']
+
+
+def resport():
+    with open('./config/guild.json') as config:
+        result = json.load(config)
+        report = result['quest']['report']
+        return report
 
 
 def mission_list(mission_id, mission_type):
-    with open(f'mission/{mission_type}.json', encoding='UTF8') as mission:
+    with open(f'./mission/{mission_type}.json', encoding='UTF8') as mission:
         data = json.load(mission)
         return data[str(mission_id)]
 
@@ -36,6 +62,25 @@ class MissionCenter(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(self.bot.user.name + " Connected.")
+
+    @commands.command(name='center')
+    async def group_mission_command(self, ctx):
+        await ctx.send(
+            file=discord.File('./img/mission_ban.png')
+        )
+        await ctx.send(
+            '\nผู้เล่นจะต้องนำส่งสินค้าที่ได้จากการกดรับภารกิจมาส่ง ที่ '
+            '\nสถานีขนส่ง ตำแหน่ง A4N3 (สนามบิน)'
+            '\nโดยจำนวนสินค้า ชนิด และรางวัลประจำภารกิจจะถูกระบุไว้'
+            '\nในภาพที่ได้จากการกดรับภารกิจ ',
+            file=discord.File('./img/guild.png')
+        )
+        await ctx.send(
+            "📃**รายชื่อห้องรับภารกิจ**\n"
+            f"<#{farm}>\n"
+            f"<#{hunt}>\n"
+            f"<#{fish}>\n"
+        )
 
     @commands.command(name='hunter')
     async def hunter_mission_command(self, ctx):
@@ -110,8 +155,10 @@ class MissionCenter(commands.Cog):
         await ctx.message.delete()
 
     @commands.command(name='get_mission')
-    async def get_mission(self, ctx):
-        mission = mission_list(random.choice(fishing_id_list), "fishing")
+    async def get_mission(self, ctx, name: str):
+        mission_id = random.choice(select(name))
+        mission = mission_list(mission_id, name)
+
         embed = discord.Embed(
             title=f"{mission['Title']}",
             description=f'{mission["Description"]}',
@@ -129,12 +176,13 @@ class GetMissionEvent(commands.Cog):
     @commands.Cog.listener()
     async def on_button_click(self, interaction):
         member = interaction.author
+
         btn = interaction.component.custom_id
         btn_list = ["farmer", "hunter", "fishing"]
         btn_cmd = ["mission_report", "mission_reset", "upload_img", "solf_reset", "hard_reset"]
         if btn in btn_list:
             if mission_status(member.id) is None or mission_status(member.id) == 0:
-                mission_id = random.choice(fishing_id_list)
+                mission_id = random.choice(select(btn))
                 mission = mission_list(mission_id, str(btn))
                 embed = discord.Embed(
                     title=f"{mission['Title']} : {mission['Name']}",
@@ -260,7 +308,7 @@ class GetMissionEvent(commands.Cog):
                     msg = await self.bot.wait_for('message', check=check, timeout=60)
                     if msg is not None:
                         player = mission_info(member.id)
-                        report_channel = interaction.guild.get_channel(963075292589604927)
+                        report_channel = interaction.guild.get_channel(resport())
                         embed = discord.Embed(
                             title=f'ภารกิจ {mission_info(member.id)[3]} สำเร็จ 🟢',
                             description='☢ คำเตือน ! หากตรวจพบการทุจริต จะทำการยึดเงินและค่าประสบการณ์ทั้งหมดทันที',
@@ -282,7 +330,7 @@ class GetMissionEvent(commands.Cog):
                                        custom_id='solf_reset')]
                         )
                         await discord.DMChannel.send(member, f"{result_coins}\n{result_exp}")
-                        statement = self.bot.get_channel(963075292589604927)
+                        statement = self.bot.get_channel(resport())
                         msg = await statement.send(
                             "📃 **Mission Statement {}**\n"
                             "```=====================================\n"
@@ -312,8 +360,6 @@ class GetMissionEvent(commands.Cog):
                 await interaction.channel.send(f'{result}')
             elif btn == 'hard_reset':
                 result = mission_fine(member.id, 100)
-                print(type(result))
-                print(result)
                 await interaction.respond(content=f"{result['reset']}")
                 await discord.DMChannel.send(member, f"{result['fine']}")
             elif btn == 'mission_reset':
