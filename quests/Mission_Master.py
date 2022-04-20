@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import json
+import os
 import random
 import discord
 from discord.ext import commands
@@ -14,6 +15,8 @@ from database.Mission_db import new_mission, mission_status, get_mission_id, mis
 fishing_id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 farmer_id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 hunter_id_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+report_id = os.getenv("PLAYER_QUEST_REPORT")
 
 
 def select(missionlist):
@@ -177,7 +180,7 @@ class GetMissionEvent(commands.Cog):
     @commands.Cog.listener()
     async def on_button_click(self, interaction):
         member = interaction.author
-
+        report_channel = interaction.guild.get_channel(int(report_id))
         btn = interaction.component.custom_id
         btn_list = ["farmer", "hunter", "fishing"]
         btn_cmd = ["mission_report", "mission_reset", "upload_img", "solf_reset", "hard_reset"]
@@ -202,6 +205,7 @@ class GetMissionEvent(commands.Cog):
                     embed.add_field(name='🎖 ค่าประสบการณ์', value=f"```cs\n{mission['Award']} exp.\n```")
                     embed.set_image(url=mission['ImageURL'])
                     await interaction.respond(embed=embed)
+                    await report_channel.send(f"{member.mention}", embed=embed)
                     new_mission(member.name, member.id, mission['Name'], mission['Award'], mission['Exp'],
                                 mission['ImageURL'], mission_id, str(btn))
                 elif mission_status(member.id) == 1:

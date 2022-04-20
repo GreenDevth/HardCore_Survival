@@ -21,7 +21,7 @@ def exp_update(discord_id, exp):
     elif exp_plus < default_level:
         update_exp(discord_id, exp_plus)
         exps = players(discord_id)[8]
-        msg = f"คุณได้รับค่าประสบการณ์เพิ่ม จำนวน **{exp}** ค่าประสบการณ์ปัจจุบันของคุณคือ **{exps}**"
+        msg = f"คุณได้รับค่าประสบการณ์เพิ่ม จำนวน {exp} ค่าประสบการณ์ปัจจุบันของคุณคือ {exps}"
     return msg
 
 

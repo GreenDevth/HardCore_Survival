@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import json
+import os
 import random
 
 import discord
@@ -20,6 +21,10 @@ def generate_code(length):
     string_code = 'reallysurvival'
     result = ''.join((random.choice(string_code)) for x in range(length))
     return result.upper()
+
+
+PWD = os.getenv("PWD")
+IP = os.getenv("IP")
 
 
 class RegistartionMember(commands.Cog):
@@ -283,8 +288,7 @@ class RegistrationEvent(commands.Cog):
                 if member_check(member.id) == 1:
                     if players(member.id)[9] == "Exclusive":
                         verify_member(member.id)
-                        await interaction.respond(content="ระบบกำลังจัดส่ง IP/PWD ให้กับคุณ")
-                        await discord.DMChannel.send(member, "Server IP `` 143.244.33.48:7102 ``, PWD : `` 7314412 ``")
+                        await interaction.respond(content=f"IP: **{IP}**, PWD: **{PWD}**")
                     else:
                         verify = verify_check(member.id)
 
