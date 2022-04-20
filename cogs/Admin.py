@@ -37,8 +37,8 @@ class DiscordAdminCommand(commands.Cog):
 
         verify = discord.utils.get(ctx.guild.roles, name='Verify Members')
         role = discord.utils.get(ctx.guild.roles, name='Joiner')
-        member_name = players(member.id)[1]
-        if member_name == member.name:
+        member_id = players(member.id)[3]
+        if int(member_id) == member.id:
             await ctx.reply(f'✅ {member.display_name} is verified', mention_author=False)
             if role in member.roles:
                 await member.remove_roles(role)
@@ -49,6 +49,8 @@ class DiscordAdminCommand(commands.Cog):
                 pass
             verified = verify_member(member.id)
             await discord.DMChannel.send(member, verified)
+        else:
+            await ctx.reply(f"{member_id} \n {member.id}")
 
     @verify_command.error
     async def verify_command_error(self, ctx, error):

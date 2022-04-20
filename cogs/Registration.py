@@ -8,7 +8,7 @@ from discord.ext import commands
 from discord_components import Button, ButtonStyle
 
 from database.Member_db import steam_check, update_steam_id, member_check, \
-    join_server, verify_check, activate_code_check, activate_code, players, update_activate_code
+    join_server, verify_check, activate_code_check, activate_code, players, update_activate_code, verify_member
 
 with open('./config/config.json') as config:
     data = json.load(config)
@@ -42,7 +42,7 @@ class RegistartionMember(commands.Cog):
                 [
                     Button(style=ButtonStyle.gray, label='ลงทะเบียน', emoji='📝', custom_id='new_player'),
                     Button(style=ButtonStyle.gray, label='ปลดล๊อคการใช้งาน', emoji='🔓', custom_id='activate_player'),
-                    Button(style=ButtonStyle.gray, label='ขอรหัสใหม่', custom_id='new_code')
+                    Button(style=ButtonStyle.gray, label='รับรหัสผ่าน', custom_id='new_code')
                 ]
             ]
         )
@@ -221,6 +221,7 @@ class RegistrationEvent(commands.Cog):
                             while True:
                                 def check(res):
                                     return res.author == interaction.author and res.channel == interaction.channel
+
                                 try:
                                     msg = await self.bot.wait_for(
                                         'message',
@@ -280,39 +281,61 @@ class RegistrationEvent(commands.Cog):
 
             if btn == btn_list[2]:
                 if member_check(member.id) == 1:
-                    verify = verify_check(member.id)
-
-                    def player_ign():
-                        ign = players(member.id)[2]
-                        if ign is not None:
-                            return ign
-                        elif ign is None:
-                            message = "ยังไม่ระบุชื่อตัวละคร"
-                            return message.strip()
-
-                    if verify == 1:
-                        img = "https://cdn.discordapp.com/attachments/941531376363126814/964896802274967622/unknown.png"
-                        embed = discord.Embed(
-                            title='คุณเป็นสมาชิค Exclusive Members แล้ว',
-                            colour=discord.Colour.green()
-                        )
-                        embed.set_thumbnail(url=member.avatar_url)
-                        embed.set_image(url=img)
-                        embed.add_field(name='IGN', value='```cs\n{}\n```'.format(player_ign()))
-                        embed.add_field(name='SteamID', value='```cs\n{}\n```'.format(steam_check(member.id)))
-                        embed.set_footer(text='Server IP [143.244.33.48:7102], PWD : 7314412')
-                        await interaction.respond(embed=embed)
+                    if players(member.id)[9] == "Exclusive":
+                        verify_member(member.id)
+                        await interaction.respond(content="ระบบกำลังจัดส่ง IP/PWD ให้กับคุณ")
+                        await discord.DMChannel.send(member, "Server IP `` 143.244.33.48:7102 ``, PWD : `` 7314412 ``")
                     else:
-                        new = activate_code_check(member.id)
-                        if new is not None:
-                            await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
-                            await discord.DMChannel.send(member, f" รหัสปลดล็อคของคุณ คือ {new}")
-                            return
+                        verify = verify_check(member.id)
+
+                        def player_ign():
+                            ign = players(member.id)[2]
+                            if ign is not None:
+                                return ign
+                            elif ign is None:
+                                message = "ยังไม่ระบุชื่อตัวละคร"
+                                return message.strip()
+
+                        if verify == 1:
+                            img = "https://cdn.discordapp.com/attachments/941531376363126814/964896802274967622" \
+                                  "/unknown.png "
+                            embed = discord.Embed(
+                                title='คุณเป็นสมาชิค Exclusive Members แล้ว',
+                                colour=discord.Colour.green()
+                            )
+                            embed.set_thumbnail(url=member.avatar_url)
+                            embed.set_image(url=img)
+                            embed.add_field(name='IGN', value='```cs\n{}\n```'.format(player_ign()))
+                            embed.add_field(name='SteamID', value='```cs\n{}\n```'.format(steam_check(member.id)))
+                            embed.set_footer(text='Server IP [143.244.33.48:7102], PWD : 7314412')
+                            await interaction.respond(embed=embed)
                         else:
-                            activatecode = generate_code(6)
-                            update_activate_code(member.id, activatecode)
-                            await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
-                            await discord.DMChannel.send(member, f" รหัสปลดล็อคของคุณ คือ {activatecode}")
+                            new = activate_code_check(member.id)
+                            img = "https://cdn.discordapp.com/attachments/941531376363126814/966344863262068776" \
+                                  "/activate.png "
+                            if new is not None:
+                                await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
+                                embed = discord.Embed(
+                                    title=f"รหัสปลดล็อคของคุณ คือ {new}",
+                                    description="กดปุ่ม ปลกล็อคการใช้งานตามภาพด้านล่าง และทำตามระบบต่อไป",
+                                    color=discord.Colour.green()
+                                )
+                                embed.set_image(url=img)
+                                embed.add_field(name="ห้องสำหรับปลดล็อคการใช้งาน", value="<#878878305296728095>")
+                                await discord.DMChannel.send(member, embed=embed)
+                                return
+                            else:
+                                activatecode = generate_code(6)
+                                update_activate_code(member.id, activatecode)
+                                await interaction.respond(content="อีกสักครู่คุณจะได้รับข้อความจากระบบ")
+                                embed = discord.Embed(
+                                    title=f"รหัสปลดล็อคของคุณ คือ {activatecode}",
+                                    description="กดปุ่ม ปลกล็อคการใช้งานตามภาพด้านล่าง และทำตามระบบต่อไป",
+                                    color=discord.Colour.green()
+                                )
+                                embed.set_image(url=img)
+                                await discord.DMChannel.send(
+                                    member, embed=embed)
                 elif member_check(member.id) == 0:
                     img = "https://cdn.discordapp.com/attachments/941531376363126814/964892521283072050" \
                           "/register_guide.png "
