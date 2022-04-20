@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-token = os.getenv('GUILD_MASTER')  # HARDCORE = SCUM HARDCORE SURVIVAL, USE
+token = os.getenv('GUILD_MASTER')  # HARDCORE = SCUM HARDCORE SURVIVAL, USE GUILD_MASTER
 
 intents = discord.Intents.default()
 intents.members = True

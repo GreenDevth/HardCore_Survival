@@ -157,3 +157,16 @@ def mission_reset(discord):
         return msg.strip()
     except Error as e:
         print(e)
+
+
+def list_player_mission():
+    try:
+        conn = create_connection(db)
+        cur = conn.cursor()
+        rows = cur.execute(
+            'select player_name, player_id, mission_name, mission_type from player_mission where mission_status=1 '
+            'order by mission_id '
+        ).fetchall()
+        return rows
+    except Error as e:
+        print(e)

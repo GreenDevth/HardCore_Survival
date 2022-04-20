@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-token = os.getenv('HARDCORE')
+token = os.getenv('TOKEN')
 
 intents = discord.Intents.default()
 intents.members = True

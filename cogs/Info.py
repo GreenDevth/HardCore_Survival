@@ -24,5 +24,6 @@ class ServerInformation(commands.Cog):
             "- Server IP : 143.244.33.48:7102"
         )
 
+
 def setup(bot):
     bot.add_cog(ServerInformation(bot))

@@ -1,0 +1,12 @@
+{
+  "store": {
+    "vehicle": {
+      "pickup": {},
+      "suv": {},
+      "atv": {},
+      "dirtbike": {},
+      "cruiser": {},
+      "sportbike": {}
+    }
+  }
+}

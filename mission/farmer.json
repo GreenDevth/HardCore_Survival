@@ -152,8 +152,8 @@
   "16": {
     "ID": 1015,
     "Title": "Fruits and Vegetable QUEST",
-    "Name": "นำส่ง Tometo ",
-    "Description": "นำส่ง Tometo ตามจำนวนที่ระบุตามภาพ",
+    "Name": "นำส่ง Watermelon ",
+    "Description": "นำส่ง Watermelon ตามจำนวนที่ระบุตามภาพ",
     "ImageURL": "https://cdn.discordapp.com/attachments/965850971274088448/966196986917314600/watermelon.png",
     "Quantity": "5 Qt.",
     "Award": 500,
