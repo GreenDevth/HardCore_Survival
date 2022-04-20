@@ -235,7 +235,7 @@ class GetMissionEvent(commands.Cog):
                                     channel_id = 0000000000000000
                                     return channel_id
                                 elif mission_info(member.id)[7] is not None:
-                                    print(mission_info(member.id)[7])
+                                    # print(mission_info(member.id)[7])
                                     channel_id = int(mission_info(member.id)[7])
                                     return channel_id
                             except Exception as e:
