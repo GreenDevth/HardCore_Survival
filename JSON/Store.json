@@ -7,6 +7,9 @@
       "dirtbike": {},
       "cruiser": {},
       "sportbike": {}
+    },
+    "build": {
+      "bolts": {}
     }
   }
 }
