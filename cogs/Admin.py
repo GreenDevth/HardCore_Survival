@@ -115,6 +115,7 @@ class ScumServerStatus(commands.Cog):
                 "```============================================="
                 f"\nServer: {scum_server} "
                 f"\nIP: {scum_ip}:{scum_port} "
+                f"\nPWD: 7314412 "
                 f"\nStatus: {scum_status} "
                 f"\nTime in Game: {scum_time} "
                 f"\nPlayers: {scum_player}/{scum_player_max} "

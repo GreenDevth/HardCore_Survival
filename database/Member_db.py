@@ -177,7 +177,7 @@ def verify_member(discord):
             """, (discord,))
         conn.commit()
         cur.close()
-        msg = "🎉 Verify successfully! : Server IP [143.244.33.48:7102]"
+        msg = "🎉 Verify successfully! : Server IP [143.244.33.48:7102], PWD : 7314412"
         return msg.strip()
     except Error as e:
         print(e)

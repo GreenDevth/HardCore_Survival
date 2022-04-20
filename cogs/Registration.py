@@ -211,6 +211,7 @@ class RegistrationEvent(commands.Cog):
                             embed.set_image(url=img)
                             embed.add_field(name='IGN', value='```cs\n{}\n```'.format(player_ign()))
                             embed.add_field(name='SteamID', value='```cs\n{}\n```'.format(steam_check(member.id)))
+                            embed.set_footer(text='Server IP [143.244.33.48:7102], PWD : 7314412')
                             await interaction.respond(embed=embed)
                         elif check == 0:
                             await interaction.respond(
@@ -299,6 +300,7 @@ class RegistrationEvent(commands.Cog):
                         embed.set_image(url=img)
                         embed.add_field(name='IGN', value='```cs\n{}\n```'.format(player_ign()))
                         embed.add_field(name='SteamID', value='```cs\n{}\n```'.format(steam_check(member.id)))
+                        embed.set_footer(text='Server IP [143.244.33.48:7102], PWD : 7314412')
                         await interaction.respond(embed=embed)
                     else:
                         new = activate_code_check(member.id)
