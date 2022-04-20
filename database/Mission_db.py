@@ -28,7 +28,7 @@ def create_table():
                     report_status INTEGER NULL DEFAULT 0,
                     mission_status INTEGER NULL DEFAULT 0
                 )""")
-            print("Shopping cart table has been created!")
+            print("player mission table has been created!")
             conn.commit()
             cur.close()
         else:
