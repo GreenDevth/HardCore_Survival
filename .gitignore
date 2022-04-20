@@ -146,3 +146,4 @@ config.json
 scum_db.db
 SQLite/
 *.db
+SQLite
