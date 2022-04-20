@@ -1,7 +1,40 @@
-from database.Bank_db import remove_coins, mission_fine
 from database.Member_db import *
 
 db = str(os.path.abspath('./SQLite/scum_db.db'))
+
+
+def create_table():
+    conn = None
+    try:
+        conn = create_connection(db)
+        cur = conn.cursor()
+
+        """Create Shopping_cart Table"""
+        list_of_table = cur.execute(
+            """SELECT tbl_name FROM sqlite_master WHERE type='table' AND tbl_name='player_mission';""").fetchall()
+
+        if not list_of_table:
+            cur.execute(
+                """CREATE TABLE player_mission(
+                    mission_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    player_name TEXT NULL,
+                    player_id TEXT NULL,
+                    mission_name TEXT NULL,
+                    mission_award INTEGER NULL,
+                    mission_exp INTEGER NULL,
+                    mission_img TEXT NULL,
+                    report_room TEXT NULL,
+                    upload_status INTEGER NULL DEFAULT 0,
+                    report_status INTEGER NULL DEFAULT 0,
+                    mission_status INTEGER NULL DEFAULT 0
+                )""")
+            print("Shopping cart table has been created!")
+            conn.commit()
+            cur.close()
+        else:
+            pass
+    except Error as e:
+        print(e)
 
 
 def player_check(discord):
@@ -48,7 +81,9 @@ def get_mission_id(discord):
     try:
         conn = create_connection(db)
         cur = conn.cursor()
-        rows = cur.execute('select quest_id, mission_type from player_mission where player_id=?', (discord,)).fetchone()
+        rows = cur.execute(
+            'select mission_id, mission_name from player_mission where player_id=?',
+            (discord,)).fetchone()
         while rows is not None:
             res = list(rows)
             return res

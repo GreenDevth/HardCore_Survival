@@ -5,7 +5,7 @@ import random
 import discord
 from discord.ext import commands
 from discord_components import Button, ButtonStyle
-
+from database.Mission_db import create_table
 from database.Award import exp_process
 from database.Bank_db import add_coins, mission_fine
 from database.Mission_db import new_mission, mission_status, get_mission_id, mission_info, update_room_channel, \
@@ -62,6 +62,7 @@ class MissionCenter(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(self.bot.user.name + " Connected.")
+        create_table()
 
     @commands.command(name='center')
     async def group_mission_command(self, ctx):
