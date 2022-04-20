@@ -7,12 +7,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-token = os.getenv('HARDCORE')
+token = os.getenv('GUILD_MASTER')  # HARDCORE = SCUM HARDCORE SURVIVAL, USE
 
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix='!$', intents=intents)
+bot = commands.Bot(command_prefix='.', intents=intents)
 DiscordComponents(bot)
 
 

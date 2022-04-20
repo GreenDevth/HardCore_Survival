@@ -330,7 +330,7 @@ class GetMissionEvent(commands.Cog):
                                 Button(style=ButtonStyle.red, label='Reset mission and close this channel', emoji='🏁',
                                        custom_id='solf_reset')]
                         )
-                        await discord.DMChannel.send(member, f"{result_coins}\n{result_exp}")
+                        await discord.DMChannel.send(member, f"```cs\n{result_coins}\n{result_exp}\n```")
                         statement = self.bot.get_channel(resport())
                         msg = await statement.send(
                             "📃 **Mission Statement {}**\n"
@@ -362,7 +362,7 @@ class GetMissionEvent(commands.Cog):
             elif btn == 'hard_reset':
                 result = mission_fine(member.id, 100)
                 await interaction.respond(content=f"{result['reset']}")
-                await discord.DMChannel.send(member, f"{result['fine']}")
+                await discord.DMChannel.send(member, f"```cs\n{result['fine']}\n```")
             elif btn == 'mission_reset':
                 if mission_status(member.id) is None or mission_status(member.id) == 0:
                     await interaction.respond(content='คุณยังไม่มีภารกิจให้รีเซ็ต')

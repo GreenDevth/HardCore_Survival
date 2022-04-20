@@ -26,7 +26,9 @@ def create_table():
                     report_room TEXT NULL,
                     upload_status INTEGER NULL DEFAULT 0,
                     report_status INTEGER NULL DEFAULT 0,
-                    mission_status INTEGER NULL DEFAULT 0
+                    mission_status INTEGER NULL DEFAULT 0,
+                    quest_id INTEGER NULL,
+                    mission_type TEXT NULL 
                 )""")
             print("player mission table has been created!")
             conn.commit()
@@ -82,7 +84,7 @@ def get_mission_id(discord):
         conn = create_connection(db)
         cur = conn.cursor()
         rows = cur.execute(
-            'select mission_id, mission_name from player_mission where player_id=?',
+            'select quest_id, mission_type from player_mission where player_id=?',
             (discord,)).fetchone()
         while rows is not None:
             res = list(rows)
