@@ -68,7 +68,7 @@ class DonateEvent(commands.Cog):
             channel_name = interaction.guild.get_channel(current_channel)
             if channel_name is None:
                 await interaction.respond(content='โปรดรอสักครู่ระบบกำลังเปิดห้องให้กับคุณ')
-                categorys = discord.utils.get(interaction.guild.categories, name="SERVER DONATION")
+                categorys = discord.utils.get(interaction.guild.categories, name="DONATE SERVER")
                 overwrites = {
                     interaction.guild.default_role: discord.PermissionOverwrite(read_messages=False, connect=False),
                     member: discord.PermissionOverwrite(read_messages=True)
