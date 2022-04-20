@@ -14,6 +14,14 @@ from database.Member_db import verify_member, players, steam_to_info
 load_dotenv()
 admin = os.getenv('ADMIN')
 
+
+def cmd_channel():
+    with open('./config/config.json') as config:
+        result = json.load(config)
+        cmd = result["commands_channel"]
+        return cmd
+
+
 with open('./config/Server.json') as Roles:
     data = json.load(Roles)
     admin_role = data['roles']['admin']
@@ -162,6 +170,46 @@ class ScumServerStatus(commands.Cog):
         await ctx.send(
             file=discord.File('./Exclusive/exclusive_data.csv')
         )
+
+    @commands.command(name='players')
+    @commands.has_permissions(manage_roles=True)
+    async def player_command(self, ctx, member: discord.Member):
+
+        player = players(member.id)
+        player_coin = "${:,d}".format(player[6])
+
+        def ign():
+            player_ign = player[2]
+            if player_ign is not None:
+                return player_ign
+            elif player_ign is None:
+                return "ยังไม่ระบุ"
+
+        msg = f"ID : {player[0]}\n" \
+              f"NAME : '{player[1]}'\n" \
+              f"IGN : '{ign()}'\n" \
+              f"BANK ID : {player[5]}\n" \
+              f"COIN : {player_coin}\n" \
+              f"LEVEL : {player[7]}\n" \
+              f"EXP : {player[8]}\n" \
+              f"STATUS : '{player[9]}'"
+        embed = discord.Embed(
+            title=f'DATA INFORMATION OFF {player[1]}',
+            colour=discord.Colour.green()
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        embed.add_field(
+            name='Player informaion',
+            value=f"```cs\n{msg}\n```"
+        )
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @player_command.error
+    async def player_command_error(self, ctx, error):
+        msg = None
+        if isinstance(error, commands.MissingPermissions):
+            msg = error.args[0]
+        await ctx.reply(msg)
 
 
 def setup(bot):

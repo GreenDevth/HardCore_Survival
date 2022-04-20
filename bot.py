@@ -21,7 +21,7 @@ async def on_ready():
     await bot.change_presence(
         status=discord.Status.online,
         activity=discord.Activity(
-            type=discord.ActivityType.watching, name='Discord Mission'
+            type=discord.ActivityType.watching, name='จัดการภารกิจของเซิร์ฟ'
         )
     )
 

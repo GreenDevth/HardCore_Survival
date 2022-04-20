@@ -41,4 +41,4 @@ def players(discord):
         print(e)
 
 
-print(discord_id(45551))
+print(players(499914273049542677))

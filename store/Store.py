@@ -1,4 +1,5 @@
 from discord.ext import commands
+from database.Store_db import create_table
 
 
 class DiscordStore(commands.Cog):
@@ -8,6 +9,7 @@ class DiscordStore(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(self.bot.user.name + " has been online.")
+        create_table()
 
 
 def setup(bot):

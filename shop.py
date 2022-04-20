@@ -27,7 +27,7 @@ async def on_ready():
 
 
 if __name__ == '__main__':
-    for filename in os.listdir('./quests'):
+    for filename in os.listdir('./store'):
         if filename.endswith('.py'):
-            bot.load_extension(f'quests.{filename[:-3]}')
+            bot.load_extension(f'store.{filename[:-3]}')
     bot.run(token)
